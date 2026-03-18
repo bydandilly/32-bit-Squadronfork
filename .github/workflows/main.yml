@@ -1,4 +1,4 @@
-name: Compile Go 
+name: Compile GO
 
 on:
   workflow_dispatch: 
@@ -6,25 +6,27 @@ on:
 jobs:
   build:
     strategy:
-  
       fail-fast: false 
-      matrix:
-        include:
-          - os: ubuntu-latest
-            goos: linux
-            goarch: amd64
-          
-          - os: macos-13
-            goos: darwin
-            goarch: amd64
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      BINARY_NAME: 32-bit-squadron
+    matrix:
+      include:
+        - os: ubuntu-latest
+          goos: linux
+          goarch: amd64
+      
+        - os: macos-latest
+          goos: darwin
+          goarch: amd64
 
-          - os: macos-14
-            goos: darwin
-            goarch: arm64
-            
-          - os: windows-latest
-            goos: windows
-            goarch: amd64
+        - os: macos-latest
+          goos: darwin
+          goarch: arm64
+          
+        - os: windows-latest
+          goos: windows
+          goarch: amd64
 
     runs-on: ${{ matrix.os }}
 
@@ -37,29 +39,28 @@ jobs:
       with:
         go-version: 'stable'
 
-
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y xorg-dev libgl1-mesa-dev
+        sudo apt-get install -y xorg-dev libgl1-mesa-dev libxcursor-dev libxinerama-dev libxrandr-dev libxi-dev libasound2-dev libmesa-dev
 
     - name: Build Binary
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
-        CGO_ENABLED: 1 
+        CGO_ENABLED: 1
       shell: bash
       run: |
         EXT=""
         if [ "$GOOS" = "windows" ]; then
           EXT=".exe"
         fi
-        
-        go build -v -o myapp-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./...
+        # Build the specific binary name
+        go build -v -o "${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}$EXT" .
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: 32-bit-squadron-${{ matrix.goos }}-${{ matrix.goarch }}
-        path: 32-bit-squadron-${{ matrix.goos }}-${{ matrix.goarch }}*
+        name: ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}
+        path: ${{ env.BINARY_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}*
