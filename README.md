@@ -9,7 +9,7 @@ The entire game will be recoded in the Go programming language for better perfor
 - ### Developers
   - **Joquicx:** Animation, Artwork
   - **Moral355NG:** Animation, Programming
-- ### Contributors
+- ### Community Forks
   - **CooperDActor-bytes:** Mac Version at https://github.com/CooperDActor-bytes/32-bit-Squadron
 - ### Frameworks
   - **Pygame-CE (v0.1.0-v1.0.1):** https://github.com/pygame-community/pygame-ce
