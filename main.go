@@ -31,8 +31,10 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	var width, height = ebiten.WindowSize()
+
 	player_op := &ebiten.DrawImageOptions{}
-	player_op.GeoM.Translate(100, 100)
+	player_op.GeoM.Translate(float64(width)/2-, float64(height)-128)
 	player_op.GeoM.Scale(1*scaling, 1*scaling)
 	enemy_op := &ebiten.DrawImageOptions{}
 	enemy_op.GeoM.Translate(200, 200)
