@@ -1,15 +1,32 @@
-name: Compile Go Binaries
+name: Compile Go 
 
 on:
   workflow_dispatch: 
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
+  
+      fail-fast: false 
       matrix:
-        goos: [linux, windows, darwin]
-        goarch: [amd64, arm64]
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+          
+          - os: macos-13
+            goos: darwin
+            goarch: amd64
+
+          - os: macos-14
+            goos: darwin
+            goarch: arm64
+            
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout Repository
@@ -20,16 +37,26 @@ jobs:
       with:
         go-version: 'stable'
 
-    - name: Build Binary
+
+    - name: Install Linux Dependencies
+      if: runner.os == 'Linux'
       run: |
-        # this section appends the exe file extention to windows.
+        sudo apt-get update
+        sudo apt-get install -y xorg-dev libgl1-mesa-dev
+
+    - name: Build Binary
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+        CGO_ENABLED: 1 
+      shell: bash
+      run: |
         EXT=""
-        if [ "${{ matrix.goos }}" = "windows" ]; then
+        if [ "$GOOS" = "windows" ]; then
           EXT=".exe"
         fi
         
-        # Compile the code
-        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -v -o myapp-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./...
+        go build -v -o myapp-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./...
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
