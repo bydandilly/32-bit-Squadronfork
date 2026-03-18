@@ -8,7 +8,9 @@ The entire game will be recoded in the Go programming language for better perfor
 ## Credits
 - ### Developers
   - **Joquicx:** Animation, Artwork
-  - **Moral355NG:** Animation, Programming
+  - **Moral355NG:** Animation, Programming, Readme
+- ### Contributors
+  - **CooperDActor-bytes:** Readme
 - ### Frameworks
   - **Pygame-CE (v0.1.0-v1.0.1):** https://github.com/pygame-community/pygame-ce
   - **Ebitengine (v1.1.0+ WIP):** https://github.com/hajimehoshi/ebiten
