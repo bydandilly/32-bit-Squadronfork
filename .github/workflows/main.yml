@@ -7,28 +7,31 @@ jobs:
   build:
     strategy:
       fail-fast: false 
+      
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+          
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+
+    runs-on: ${{ matrix.os }}
+    
+    
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       BINARY_NAME: 32-bit-squadron
-      matrix:
-      include:
-        - os: ubuntu-latest
-          goos: linux
-          goarch: amd64
-      
-        - os: macos-latest
-          goos: darwin
-          goarch: amd64
-
-        - os: macos-latest
-          goos: darwin
-          goarch: arm64
-          
-        - os: windows-latest
-          goos: windows
-          goarch: amd64
-
-    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout Repository
