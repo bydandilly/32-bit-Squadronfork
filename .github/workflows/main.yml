@@ -1,0 +1,38 @@
+name: Compile Go Binaries
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 'stable'
+
+    - name: Build Binary
+      run: |
+        # this section appends the exe file extention to windows.
+        EXT=""
+        if [ "${{ matrix.goos }}" = "windows" ]; then
+          EXT=".exe"
+        fi
+        
+        # Compile the code
+        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -v -o myapp-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./...
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: 32-bit-squadron-${{ matrix.goos }}-${{ matrix.goarch }}
+        path: 32-bit-squadron-${{ matrix.goos }}-${{ matrix.goarch }}*
